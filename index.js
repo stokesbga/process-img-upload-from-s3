@@ -54,7 +54,7 @@ exports.handler = function(event, context, callback) {
         function transform(response, next) {
             // set thumbnail width. Resize will set height automatically 
             // to maintain aspect ratio.
-            var width = 1024;
+            var width = (targetBucket == 'collage') ? 1200 : 1024;
 
             // Transform the image buffer in memory.
             sharp(response.Body)
