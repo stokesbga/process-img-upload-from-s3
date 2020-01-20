@@ -27,7 +27,7 @@ exports.handler = function(event, context, callback) {
     }
 
     var dstKey = `${env}/${targetBucket}/${uuid}.jpg`;
-    console.log("Variables from object key", env, targetBucket, uuid, srcKey, dstKey);
+    console.log("Variables from object key", env, targetBucket, uuid, srcKey);
 
     // Infer the image type.
     var typeMatch = srcKey.match(/\.([^.]*)$/);
@@ -76,7 +76,14 @@ exports.handler = function(event, context, callback) {
                     ContentType: contentType
                 },
                 next);
-            }
+            },
+        function clean(response, next) {
+            // Remove original image from tmp
+            s3.deleteObject({
+                Bucket: srcBucket,
+                Key: srcKey
+            }, next);
+        },
         ], function (err) {
             if (err) {
                 console.error(
@@ -91,7 +98,7 @@ exports.handler = function(event, context, callback) {
                 );
             }
 
-            callback(null, "message");
+            callback(null, "Error");
         }
     );
 };
